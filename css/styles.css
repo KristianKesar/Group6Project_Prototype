@@ -1,0 +1,417 @@
+/* =========================================================
+   Marathon Coach – Prototype v1 (Team 6)
+   All the styling for the app lives in this one file.
+   Sections:
+     1. Colours (variables)
+     2. Page and app frame
+     3. Header
+     4. Cards, rows and text
+     5. Buttons
+     6. Weekly grid (dots)
+     7. Edit screen (steppers, inputs, AI panel)
+     8. Bottom navigation
+   ========================================================= */
+
+
+/* ---------- 1. Colours ----------
+   Change a colour here and it changes everywhere. */
+:root {
+  --ink: #111827;          /* main text, dark header */
+  --text-muted: #4B5563;   /* secondary text */
+  --background: #F6F7F9;   /* app background */
+  --white: #FFFFFF;
+  --border: #E5E7EB;
+  --border-strong: #D1D5DB;
+  --divider: #F1F5F9;
+
+  --blue: #1D4ED8;         /* done, links, main buttons */
+  --blue-light: #EFF6FF;
+  --blue-dark: #1E3A8A;
+
+  --orange: #C2410C;       /* missed, warnings */
+  --orange-light: #FFEDD5;
+  --orange-dark: #9A3412;
+
+  --violet: #6D28D9;       /* AI suggestion */
+  --violet-light: #F5F3FF;
+  --violet-dark: #5B21B6;
+}
+
+
+/* ---------- 2. Page and app frame ---------- */
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #E5E7EB;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--ink);
+}
+
+/* The app is phone-sized. On a phone it fills the screen. */
+#app {
+  max-width: 430px;
+  height: 100%;
+  margin: 0 auto;
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* On a laptop it shows as a phone-shaped box in the middle. */
+@media (min-width: 520px) {
+  html, body { height: auto; }
+  #app {
+    height: 880px;
+    margin: 24px auto;
+    border-radius: 28px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.prototype-banner {
+  font-size: 11px;
+  text-align: center;
+  color: var(--text-muted);
+  padding: 4px;
+  background: #F3F4F6;
+}
+
+/* The scrolling middle part of every screen */
+main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+
+/* ---------- 3. Header ---------- */
+header {
+  background: var(--ink);
+  color: var(--white);
+  padding: 14px 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+header.runner-header { background: var(--blue); }   /* runner screens are blue */
+header h1 { margin: 0; font-size: 22px; font-weight: 700; }
+header .kicker,
+header .subtitle { margin: 0; font-size: 13px; color: #CBD5E1; }
+header.runner-header .kicker,
+header.runner-header .subtitle { color: #DBEAFE; }
+
+.back-button {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #BFDBFE;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+
+/* ---------- 4. Cards, rows and text ---------- */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.card.compact { gap: 0; }                     /* lists of rows */
+.card.horizontal { flex-direction: row; align-items: center; justify-content: space-between; }
+.card.warning { border-color: #FED7AA; }
+.card.info { background: var(--blue-light); border-color: #BFDBFE; }
+
+h2 { margin: 0; font-size: 15px; font-weight: 700; }
+.card.compact h2 { margin-bottom: 6px; }
+.warning-title { color: var(--orange-dark); }
+
+.muted { color: var(--text-muted); font-size: 13px; margin: 0; }
+.small { font-size: 12px; color: var(--text-muted); }
+.title { font-size: 14px; font-weight: 600; }
+
+/* One line in a list: text on the left, status or button on the right */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 52px;
+  border-top: 1px solid var(--divider);
+}
+.row.today { background: var(--blue-light); border-radius: 10px; padding: 0 8px; margin: 0 -8px; }
+
+.text-stack { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.row-actions { display: flex; align-items: center; gap: 8px; }
+
+/* Status words */
+.status-done     { color: var(--blue);   font-size: 13px; font-weight: 700; white-space: nowrap; }
+.status-problem  { color: var(--orange); font-size: 13px; font-weight: 700; white-space: nowrap; }
+.status-upcoming { color: var(--text-muted); font-size: 13px; font-weight: 600; white-space: nowrap; }
+.link-text       { color: var(--blue);   font-size: 13px; font-weight: 600; white-space: nowrap; }
+
+/* Little purple "changed" label */
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--violet);
+  background: var(--violet-light);
+  border: 1px solid #DDD6FE;
+  border-radius: 6px;
+  padding: 1px 6px;
+  margin-left: 4px;
+}
+
+/* Confirmation message, e.g. "Saved" */
+.confirmation {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--blue-light);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--blue-dark);
+  margin: 0;
+  text-align: center;
+  padding: 8px;
+}
+
+/* Three small number boxes on the runner page */
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.stat {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.stat b { font-size: 18px; }
+
+.invite-link {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px dashed #94A3B8;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+/* ---------- 5. Buttons ---------- */
+/* Rows you can tap (a whole runner line) */
+.row-button {
+  width: 100%;
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--divider);
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+.row-button .row { border-top: 0; }
+
+/* Big main button */
+.button {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 12px;
+  border: 0;
+  background: var(--blue);
+  color: var(--white);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.button.secondary { background: var(--white); color: var(--ink); border: 1px solid var(--ink); font-size: 14px; min-height: 44px; }
+.button.small     { width: auto; min-height: 44px; padding: 0 14px; font-size: 13px; background: var(--white); color: var(--blue); border: 1px solid var(--blue); white-space: nowrap; }
+.button.ai        { background: var(--violet); }
+
+/* Rounded choice buttons, e.g. level filter */
+.pill {
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 22px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--white);
+  color: var(--ink);
+  border: 1px solid var(--border-strong);
+}
+.pill.selected { background: var(--ink); color: var(--white); border-color: var(--ink); }
+
+.pill-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.pill-grid { display: grid; gap: 6px; }
+.pill-grid .pill { border-radius: 10px; padding: 0; }
+.pill-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pill-grid.four  { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+/* Feedback message choices */
+.message-choice {
+  min-height: 44px;
+  padding: 10px 12px;
+  text-align: left;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  background: var(--white);
+  border: 1px solid var(--border-strong);
+  color: var(--ink);
+}
+.message-choice.selected { background: var(--blue-light); border: 2px solid var(--blue); }
+
+/* On/off switch for Strava */
+.switch {
+  min-height: 44px;
+  min-width: 64px;
+  border-radius: 22px;
+  border: 1px solid var(--border-strong);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--white);
+  color: var(--text-muted);
+}
+.switch.on { background: var(--blue); color: var(--white); border-color: var(--blue); }
+
+
+/* ---------- 6. Weekly grid (dots) ----------
+   Runner name column + one column per day */
+.week-grid {
+  display: grid;
+  grid-template-columns: 92px repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  align-items: center;
+  min-height: 46px;
+}
+.week-grid.heading { min-height: 0; padding: 4px 0 8px; font-size: 12px; color: var(--text-muted); font-weight: 600; }
+.week-grid.heading span { text-align: center; }
+.week-grid.heading span:first-child { text-align: left; }
+.week-grid.heading .today-column { color: var(--blue); }
+.runner-name { font-size: 14px; font-weight: 600; }
+.runner-level { font-size: 11px; color: var(--text-muted); }
+.attention-dot { color: var(--orange); }
+
+.dot {
+  justify-self: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+.dot.done     { background: var(--blue); color: var(--white); }
+.dot.too-fast { background: var(--orange-light); color: var(--orange-dark); border: 2px solid var(--orange); }
+.dot.missed   { background: var(--orange); color: var(--white); }
+.dot.upcoming { background: var(--white); border: 2px solid #CBD5E1; }
+.dot.today    { background: var(--blue-light); border: 2px solid var(--blue); color: var(--blue); }
+.dot.moved    { color: #6B7280; border: 2px dashed #CBD5E1; }
+.dot.rest     { color: #6B7280; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--text-muted); }
+.legend span { display: flex; align-items: center; gap: 4px; }
+.legend i { width: 14px; height: 14px; border-radius: 7px; display: inline-block; }
+
+
+/* ---------- 7. Edit screen ---------- */
+.setting-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.setting-row + .setting-row { border-top: 1px solid var(--divider); padding-top: 12px; }
+
+.stepper { display: flex; align-items: center; gap: 8px; }
+.stepper-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 22px;
+  border: 1px solid var(--border-strong);
+  background: var(--white);
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+.stepper-value { min-width: 64px; text-align: center; font-size: 18px; font-weight: 700; }
+
+input[type="text"], select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: 14px;
+  background: var(--white);
+  color: var(--ink);
+}
+
+/* The purple AI suggestion panel */
+.ai-panel { background: var(--violet-light); border-color: #C4B5FD; }
+.ai-heading { display: flex; align-items: center; gap: 8px; }
+.ai-heading h2 { color: var(--violet-dark); }
+.ai-panel ul { margin: 0; padding-left: 18px; font-size: 13px; display: flex; flex-direction: column; gap: 4px; }
+.ai-change {
+  background: var(--white);
+  border: 1px solid #DDD6FE;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.ai-change .small { display: block; font-weight: 500; margin-top: 4px; }
+.ai-applied { background: #EDE9FE; color: var(--violet-dark); }
+
+/* Save button bar at the bottom of the edit screen */
+.bottom-bar { padding: 12px 16px 20px; background: var(--white); border-top: 1px solid var(--border); }
+
+
+/* ---------- 8. Bottom navigation ---------- */
+nav {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+nav button {
+  min-height: 56px;
+  background: none;
+  border: 0;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+nav button.current { font-weight: 700; color: var(--blue); }
