@@ -1,31 +1,24 @@
 /* =========================================================
-   SCREEN: Runner view  –  US8, US9, US10
-   What a runner sees on their phone. In the prototype you can
-   switch which runner you are pretending to be.
+   RUNNER APP  –  US6, US7, US8
+   v2: runners get their own app (runner.html) with their own menu
+   (My week / Next week / Profile) instead of a "Runner view" tab
+   inside the coach app (usability test 3).
    ========================================================= */
 
-Screens.runnerView = function () {
+
+/* ---------- Runner: My week ---------- */
+
+Screens.runnerWeek = function () {
   const runner = findRunner(state.viewingAsRunner);
   const summary = getWeekSummary(runner);
   const changedSessions = summary.sessions.filter(s => s.changedByCoach);
   const sentMessageIndex = state.sentMessage[runner.name];
+  const nextWeekReady = state.sentPlans[runner.level];
 
   return `
-    ${pageHeader({
-      kicker: 'Runner view',
-      title: `Hi ${runner.name} · My week`,
-      subtitle: `Week 3 of 20 · 16–22 Nov · goal ${runner.goalTime}`,
-      isRunnerScreen: true
-    })}
+    ${runnerHeader(runner, 'My week', `Week 3 of 20 · 16–22 Nov · goal ${runner.goalTime}`)}
 
     <main>
-      <section class="card">
-        <label for="view-as" class="title">Prototype: view as</label>
-        <select id="view-as" data-change="viewAs">
-          ${RUNNERS.map(r => `<option ${r.name === runner.name ? 'selected' : ''}>${escapeHtml(r.name)}</option>`).join('')}
-        </select>
-      </section>
-
       ${changedSessions.length ? coachChangesCard(changedSessions) : ''}
 
       ${sentMessageIndex !== undefined ? `
@@ -39,11 +32,89 @@ Screens.runnerView = function () {
         ${[0, 1, 2, 3, 4, 5, 6, 7].map(day => runnerDayRows(summary.sessions, day)).join('')}
       </section>
 
+      ${nextWeekReady ? `
+        <button class="row-button card horizontal" data-action="goTo" data-value="runnerNextWeek">
+          <span class="text-stack">
+            <span class="title">Next week's plan is ready</span>
+            <span class="small">${nextWeekReady.sessions.length} sessions from your coach</span>
+          </span>
+          <span class="link-text">View</span>
+        </button>` : ''}
+    </main>
+
+    ${bottomMenu('runnerWeek')}`;
+};
+
+
+/* ---------- Runner: Next week ---------- */
+
+Screens.runnerNextWeek = function () {
+  const runner = findRunner(state.viewingAsRunner);
+  const plan = state.sentPlans[runner.level];
+
+  let content;
+  if (!plan) {
+    content = `
+      <section class="card">
+        <h2>Not ready yet</h2>
+        <p class="muted">Your coach hasn't sent next week's plan yet. You'll see it here as soon as they do.</p>
+      </section>`;
+  } else {
+    content = `
+      <section class="card compact">
+        <h2>Week 4 · 23–29 Nov</h2>
+        ${[0, 1, 2, 3, 4, 5, 6].map(day => {
+          const sessions = plan.sessions.filter(s => s.day === day);
+          if (sessions.length === 0) {
+            return `<div class="row"><span class="text-stack"><span class="title">${DAY_NAMES[day]} · Rest</span></span></div>`;
+          }
+          return sessions.map(s => `
+            <div class="row">
+              <span class="text-stack">
+                <span class="title">${DAY_NAMES[day]} · ${escapeHtml(sessionName(s))}${s.changed ? '<span class="tag">changed by coach</span>' : ''}</span>
+                <span class="small">Target ${formatPace(s.pace)}/km · about ${formatDuration(s.km, s.pace)}</span>
+                ${s.note ? `<span class="small">Coach: “${escapeHtml(s.note)}”</span>` : ''}
+              </span>
+            </div>`).join('');
+        }).join('')}
+        <p class="small">${escapeHtml(plan.focus)}</p>
+      </section>`;
+  }
+
+  return `
+    ${runnerHeader(runner, 'Next week', 'Week 4 of 20 · 23–29 Nov')}
+    <main>${content}</main>
+    ${bottomMenu('runnerNextWeek')}`;
+};
+
+
+/* ---------- Runner: Profile ---------- */
+
+Screens.runnerProfile = function () {
+  const runner = findRunner(state.viewingAsRunner);
+
+  return `
+    ${runnerHeader(runner, 'Profile', `${runner.level} · goal ${runner.goalTime}`)}
+
+    <main>
+      <section class="card compact">
+        <h2>My marathon</h2>
+        <div class="row"><span class="title">Level</span><span>${runner.level}</span></div>
+        <div class="row"><span class="title">Goal time</span><span>${runner.goalTime}</span></div>
+        <div class="row"><span class="title">Training block</span><span>Week 3 of 20</span></div>
+      </section>
+
       ${stravaCard(runner)}
     </main>
 
-    ${bottomMenu('runnerView')}`;
+    ${bottomMenu('runnerProfile')}`;
 };
+
+
+// Blue header used on every runner screen
+function runnerHeader(runner, title, subtitle) {
+  return pageHeader({ kicker: `Hi ${runner.name}`, title, subtitle, isRunnerScreen: true });
+}
 
 
 // Blue box listing what the coach changed
@@ -103,7 +174,7 @@ function runnerDayRows(sessions, day) {
 }
 
 
-// US10: connect or disconnect Strava at any time
+// US7: connect or disconnect Strava at any time
 function stravaCard(runner) {
   const connected = state.stravaConnected[runner.name];
   return `

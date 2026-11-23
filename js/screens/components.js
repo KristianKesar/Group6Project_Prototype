@@ -36,21 +36,60 @@ function pageHeader({ kicker = '', title, subtitle = '', backTo = '', backLabel 
 }
 
 
-// The menu at the bottom of the main screens
+// The menus at the bottom of the main screens.
+// v2: coaches and runners have separate apps, so each gets its own menu.
+const COACH_MENU = [
+  { screen: 'group',  label: 'Group' },
+  { screen: 'plans',  label: 'Plans' },
+  { screen: 'invite', label: 'Invite' }
+];
+const RUNNER_MENU = [
+  { screen: 'runnerWeek',     label: 'My week' },
+  { screen: 'runnerNextWeek', label: 'Next week' },
+  { screen: 'runnerProfile',  label: 'Profile' }
+];
+
 function bottomMenu(currentScreen) {
-  const items = [
-    { screen: 'group',      label: 'Group' },
-    { screen: 'plans',      label: 'Plans' },
-    { screen: 'invite',     label: 'Invite' },
-    { screen: 'runnerView', label: 'Runner view' }
-  ];
+  const items = state.role === 'runner' ? RUNNER_MENU : COACH_MENU;
 
   const buttons = items.map(item => `
-    <button data-action="goTo" data-value="${item.screen}" class="${item.screen === currentScreen ? 'current' : ''}">
+    <button data-action="goTo" data-value="${item.screen}" class="${item.screen === currentScreen ? 'current' : ''}"
+            ${item.screen === currentScreen ? 'aria-current="page"' : ''}>
       ${item.label}
     </button>`).join('');
 
-  return `<nav aria-label="Menu">${buttons}</nav>`;
+  return `<nav aria-label="Menu" class="${state.role === 'runner' ? 'runner-nav' : ''}"
+               style="grid-template-columns: repeat(${items.length}, minmax(0, 1fr))">${buttons}</nav>`;
+}
+
+
+// v2: pop-up after the coach saves or sends a change, so they know it went through
+// (usability test 1: "there was no indication that it was saved").
+function popupBox() {
+  if (!state.popup) return '';
+  return `
+    <div class="popup-backdrop">
+      <div class="popup" role="alertdialog" aria-modal="true" aria-labelledby="popup-title" aria-describedby="popup-text">
+        <div class="popup-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        </div>
+        <h2 id="popup-title">${escapeHtml(state.popup.title)}</h2>
+        <p id="popup-text" class="muted">${escapeHtml(state.popup.text)}</p>
+        <button class="button" data-action="closePopup">OK</button>
+      </div>
+    </div>`;
+}
+
+
+// Seven day buttons (or a subset) used by both edit screens
+function dayPicker(days, selectedDay) {
+  return `
+    <div class="pill-grid ${days.length === 7 ? 'seven' : 'four'}">
+      ${days.map(day => `
+        <button class="pill ${day === selectedDay ? 'selected' : ''}" aria-pressed="${day === selectedDay}"
+                data-action="pickDay" data-value="${day}">${DAY_NAMES[day]}</button>`).join('')}
+    </div>`;
 }
 
 
