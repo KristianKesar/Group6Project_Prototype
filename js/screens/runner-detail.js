@@ -35,9 +35,7 @@ Screens.runnerDetail = function () {
 
       ${feedbackCard(runner)}
 
-      <button class="button secondary" data-action="viewAsRunner" data-value="${escapeHtml(runner.name)}">
-        See ${escapeHtml(runner.name)}'s view
-      </button>
+      <p class="small">To see what ${escapeHtml(runner.name)} sees, open the login page in another tab and log in as ${escapeHtml(runner.name)}.</p>
     </main>`;
 };
 

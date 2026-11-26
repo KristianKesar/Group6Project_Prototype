@@ -75,36 +75,35 @@ const FEEDBACK_MESSAGES = [
 
 
 // The app's first-draft plan for NEXT week, per level (Plans screen).
+// v2: sessions use the same shape as this week's plan, so the coach can
+// edit them with the same day / distance / pace controls as one runner.
+//   day = 0 (Mon) … 6 (Sun)   pace = seconds per km
 const NEXT_WEEK_DRAFTS = {
   Beginner: {
-    runnerCount: 4,
     focus: 'Focus: finish safely. Easy runs at chat pace.',
     sessions: [
-      { day: 'Tue', what: 'Easy 5 km',      detail: '6:45/km' },
-      { day: 'Thu', what: 'Easy 6 km',      detail: '6:45/km' },
-      { day: 'Sat', what: 'Long run 13 km', detail: '7:00/km, walk breaks OK' },
-      { day: 'Sun', what: 'Rest',           detail: 'Stretch or walk' }
+      { day: 1, type: 'Easy',     km: 5,  pace: 405, note: '' },
+      { day: 3, type: 'Easy',     km: 6,  pace: 405, note: '' },
+      { day: 5, type: 'Long run', km: 13, pace: 420, note: 'Walk breaks OK' }
     ]
   },
   Experienced: {
-    runnerCount: 4,
     focus: 'Focus: hold even pace. Taper plan starts in week 18.',
     sessions: [
-      { day: 'Tue', what: 'Intervals 5 × 1 km', detail: '5:00/km, 2 min jog between' },
-      { day: 'Wed', what: 'Easy 8 km',          detail: '5:50/km' },
-      { day: 'Fri', what: 'Tempo 6 km',         detail: '5:15/km' },
-      { day: 'Sun', what: 'Long run 19 km',     detail: '5:55/km, last 3 km at race pace' }
+      { day: 1, type: 'Intervals 5 × 1 km', km: 8,  pace: 300, note: '2 min jog between' },
+      { day: 2, type: 'Easy',               km: 8,  pace: 350, note: '' },
+      { day: 4, type: 'Tempo',              km: 6,  pace: 315, note: '' },
+      { day: 6, type: 'Long run',           km: 19, pace: 355, note: 'Last 3 km at race pace' }
     ]
   },
   Expert: {
-    runnerCount: 2,
     focus: 'Focus: race-pace work. Taper plan starts in week 18.',
     sessions: [
-      { day: 'Tue', what: 'Intervals 6 × 1 km', detail: '4:10/km' },
-      { day: 'Wed', what: 'Easy 10 km',         detail: '5:00/km' },
-      { day: 'Thu', what: 'Tempo 8 km',         detail: '4:25/km' },
-      { day: 'Sat', what: 'Easy 8 km',          detail: '5:00/km' },
-      { day: 'Sun', what: 'Long run 26 km',     detail: '10 km at race pace 4:30/km' }
+      { day: 1, type: 'Intervals 6 × 1 km', km: 10, pace: 250, note: '' },
+      { day: 2, type: 'Easy',               km: 10, pace: 300, note: '' },
+      { day: 3, type: 'Tempo',              km: 8,  pace: 265, note: '' },
+      { day: 5, type: 'Easy',               km: 8,  pace: 300, note: '' },
+      { day: 6, type: 'Long run',           km: 26, pace: 290, note: '10 km at race pace 4:30/km' }
     ]
   }
 };

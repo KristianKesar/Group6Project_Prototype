@@ -1,0 +1,32 @@
+<!doctype html>
+<!--
+  Marathon Coach – Prototype v2 (Team 6) – RUNNER APP
+  Open index.html (the login page) and log in as a runner to get here.
+  v2: runners now have their own app instead of a "Runner view" tab
+  inside the coach app (usability test 3).
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Marathon Coach">
+  <meta name="theme-color" content="#1D4ED8">
+  <title>Marathon Coach – Runner</title>
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-app="runner">
+  <!-- Every screen is drawn inside this box -->
+  <div id="app"></div>
+
+  <!-- Only the files the runner app needs. app.js must stay last. -->
+  <script src="js/data.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/helpers.js"></script>
+  <script src="js/screens/components.js"></script>
+  <script src="js/screens/runner-view.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

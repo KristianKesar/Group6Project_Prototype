@@ -25,11 +25,7 @@ Screens.editSession = function () {
 
       <section class="card">
         <h2>Day</h2>
-        <div class="pill-grid four">
-          ${[4, 5, 6, 7].map(day => `
-            <button class="pill ${day === form.day ? 'selected' : ''}" aria-pressed="${day === form.day}"
-                    data-action="pickDay" data-value="${day}">${DAY_NAMES[day]}</button>`).join('')}
-        </div>
+        ${dayPicker([4, 5, 6, 7], form.day)}
       </section>
 
       <section class="card">

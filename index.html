@@ -1,49 +1,29 @@
 <!doctype html>
 <!--
-  Marathon Coach – Prototype v1 (Team 6)
-  Open this file in a browser to run the app. No internet or install needed.
+  Marathon Coach – Prototype v2 (Team 6) – LOGIN PAGE
+  Open this file in a browser to start. No internet or install needed.
 
-  This page is almost empty on purpose: the JavaScript files below draw
-  each screen into the <div id="app"> box.
+  Mock login: pick the coach or a runner and tap "Log in". No username
+  or password. Coaches go to coach.html, runners go to runner.html.
 -->
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <!-- These let the page open full-screen when added to a phone's home screen -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Marathon Coach">
   <meta name="theme-color" content="#111827">
-  <title>Marathon Coach – Prototype v1 (Team 6)</title>
+  <title>Marathon Coach – Log in</title>
 
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
-  <!-- Every screen is drawn inside this box -->
+<body data-app="login">
   <div id="app"></div>
 
-  <!--
-    The order matters: each file uses things defined in the files above it.
-      1. data.js         – the sample runners, sessions and plans
-      2. state.js        – what the app remembers while you click around
-      3. helpers.js      – small reusable functions (formatting, counting)
-      4. ai-advisor.js   – the rules behind the "AI suggestion" panel
-      5. components.js   – pieces used on many screens (header, menu, dots)
-      6. screens/*.js    – one file per screen
-      7. app.js          – draws the current screen and handles clicks
-  -->
   <script src="js/data.js"></script>
   <script src="js/state.js"></script>
   <script src="js/helpers.js"></script>
-  <script src="js/ai-advisor.js"></script>
-  <script src="js/screens/components.js"></script>
-  <script src="js/screens/group.js"></script>
-  <script src="js/screens/runner-detail.js"></script>
-  <script src="js/screens/edit-session.js"></script>
-  <script src="js/screens/runner-view.js"></script>
-  <script src="js/screens/plans.js"></script>
-  <script src="js/screens/invite.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/login.js"></script>
 </body>
 </html>
